@@ -24,18 +24,32 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "PNPM_CACHE_STORE=$(pnpm store path)" >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.PNPM_CACHE_STORE }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles("**/pnpm-lock.yaml") }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
       - name: Install dependencies
-        # 关键修改：添加了 --legacy-peer-deps 来忽略版本冲突
-        run: npm install --no-package-lock --legacy-peer-deps
+        run: pnpm install --no-frozen-lockfile
       - name: Build
-        # 确保您已经在 package.json 中将 build 改为了 "vite build"
-        run: npm run build
+        run: pnpm run build
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: './dist' # Corrected path to dist, as per vite.config.ts
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

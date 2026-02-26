@@ -154,6 +154,7 @@ const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(
 
 export default defineConfig({
   plugins,
+  base: '/drianzhu-website/', // Add this line for GitHub Pages deployment
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "src"),
@@ -162,7 +163,7 @@ export default defineConfig({
   },
   envDir: path.resolve(import.meta.dirname),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist"),
+    outDir: path.resolve(import.meta.dirname, "dist"), // Changed from dist/public to dist
     emptyOutDir: true,
   },
   server: {

@@ -24,10 +24,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # 删除了 cache: 'npm'，因为它需要 lock 文件
       - name: Install dependencies
-        run: npm install --no-package-lock
+        # 关键修改：添加了 --legacy-peer-deps 来忽略版本冲突
+        run: npm install --no-package-lock --legacy-peer-deps
       - name: Build
+        # 确保您已经在 package.json 中将 build 改为了 "vite build"
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v4
